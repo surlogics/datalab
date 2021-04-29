@@ -254,9 +254,7 @@ int conditional(int x, int y, int z) {
  *   Rating: 3
  */
 int isLessOrEqual(int x, int y) {
- /* int res =  x+(~y+1);
-  int x4 = ((y>>24)&0x80)^0x80;
-  return ((res >> 31)|(!x4));
+ /*Condensing the 32bit int into four bits, 0x8bit: sign(1 for positive, 0 for negative), 0x4bit: msb(1 for msb is 1, 0 for msb is 0), this could prevent overflow when performing the succeeding add/minus operation, 0x2bit, perform x-y
   */
   int signx = (x>>31);
   int signy = (y>>31);
