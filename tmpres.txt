@@ -1,0 +1,77 @@
+1. Running './dlc -z' to identify coding rules violations.
+dlc:bits.c:242:conditional: Illegal operator (-)
+dlc:bits.c:243:conditional: Illegal operator (-)
+dlc:bits.c:245:conditional: Zapping function body!
+dlc:bits.c:258:isLessOrEqual: Illegal function invocation (negate)
+dlc:bits.c:258:isLessOrEqual: Illegal function invocation (conditional)
+dlc:bits.c:259:isLessOrEqual: Illegal function invocation (conditional)
+dlc:bits.c:259:isLessOrEqual: Illegal function invocation (conditional)
+dlc:bits.c:260:isLessOrEqual: Zapping function body!
+dlc:bits.c:289:logicalNeg: Warning: 28 operators exceeds max of 12
+
+2. Compiling and running './btest -g' to determine correctness score.
+gcc -O -Wall -m32 -lm -o btest bits.c btest.c decl.c tests.c 
+bits.c: In function ‘conditional’:
+bits.c:243:7: warning: unused variable ‘xis1msk’ [-Wunused-variable]
+bits.c:242:7: warning: unused variable ‘xis0msk’ [-Wunused-variable]
+bits.c: In function ‘isLessOrEqual’:
+bits.c:258:7: warning: unused variable ‘mayoverflowadd’ [-Wunused-variable]
+btest.c: In function ‘test_function’:
+btest.c:334:23: warning: ‘arg_test_range[2]’ may be used uninitialized in this function [-Wmaybe-uninitialized]
+  334 |     if (arg_test_range[2] < 1)
+      |         ~~~~~~~~~~~~~~^~~
+
+3. Running './dlc -Z' to identify operator count violations.
+dlc:save-bits.c:242:conditional: Illegal operator (-)
+dlc:save-bits.c:243:conditional: Illegal operator (-)
+dlc:save-bits.c:245:conditional: Zapping function body!
+dlc:save-bits.c:258:isLessOrEqual: Illegal function invocation (negate)
+dlc:save-bits.c:258:isLessOrEqual: Illegal function invocation (conditional)
+dlc:save-bits.c:259:isLessOrEqual: Illegal function invocation (conditional)
+dlc:save-bits.c:259:isLessOrEqual: Illegal function invocation (conditional)
+dlc:save-bits.c:260:isLessOrEqual: Zapping function body!
+dlc:save-bits.c:289:logicalNeg: Warning: 28 operators exceeds max of 12
+dlc:save-bits.c:289:logicalNeg: Zapping function body!
+
+4. Compiling and running './btest -g -r 2' to determine performance score.
+gcc -O -Wall -m32 -lm -o btest bits.c btest.c decl.c tests.c 
+save-bits.c: In function ‘conditional’:
+save-bits.c:243:7: warning: unused variable ‘xis1msk’ [-Wunused-variable]
+  243 |   int xis1msk = ~((~((!x)-1))^0);
+      |       ^~~~~~~
+save-bits.c:242:7: warning: unused variable ‘xis0msk’ [-Wunused-variable]
+  242 |   int xis0msk = ~(((!x)-1)^0);
+      |       ^~~~~~~
+save-bits.c: In function ‘isLessOrEqual’:
+save-bits.c:258:7: warning: unused variable ‘mayoverflowadd’ [-Wunused-variable]
+  258 |   int mayoverflowadd = conditional(((x+negate(y))>>31), 1, 0);
+      |       ^~~~~~~~~~~~~~
+save-bits.c: In function ‘logicalNeg’:
+save-bits.c:287:7: warning: unused variable ‘n’ [-Wunused-variable]
+  287 |   int n = (m<<30)>>30;
+      |       ^
+btest.c: In function ‘test_function’:
+btest.c:334:23: warning: ‘arg_test_range[2]’ may be used uninitialized in this function [-Wmaybe-uninitialized]
+  334 |     if (arg_test_range[2] < 1)
+      |         ~~~~~~~~~~~~~~^~~
+
+
+5. Running './dlc -e' to get operator count of each function.
+
+Correctness Results	Perf Results
+Points	Rating	Errors	Points	Ops	Puzzle
+1	1	0	2	8	bitXor
+1	1	0	2	2	tmin
+0	1	1	0	6	isTmax
+2	2	0	2	7	allOddBits
+2	2	0	2	2	negate
+3	3	0	2	7	isAsciiDigit
+0	3	1	0	9	conditional
+0	3	1	0	2	isLessOrEqual
+4	4	0	0	28	logicalNeg
+0	4	1	0	0	howManyBits
+0	4	1	0	0	floatScale2
+0	4	1	0	0	floatFloat2Int
+0	4	1	0	0	floatPower2
+
+Score = 23/62 [13/36 Corr + 10/26 Perf] (71 total operators)
